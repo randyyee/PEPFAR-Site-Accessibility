@@ -34,10 +34,10 @@ ui <- fluidPage(tags$head(tags$style(HTML("
                                        width = 325, height = "auto",
                                        
                                        h3("PEPFAR SITE ACCESSIBILITY (PSA)"),
+                                       textInput("api_key", "ORS API Key"),
                                        selectInput("level3", "Operating Unit", choices=unique(site_meta$level3)),
                                        uiOutput("level4"),
                                        uiOutput("level5"),
-                                       #uiOutput("level6"),
                                        uiOutput("site"),
                                        selectInput("travelmode", "Travel Mode", choices = ors_profile()),
                                        # selectInput("bgmap", "Background Map Provider",
@@ -70,6 +70,7 @@ server <- function(input, output, session) {
   mode <- reactive({ input$travelmode })
 
   isochrone <- eventReactive(input$run, {
+    ors_api_key(input$api_key)
     withProgress(message = 'Running',
                  {res <- ors_isochrones((filtered_site() %>%
                                            select(lon = LONG,
